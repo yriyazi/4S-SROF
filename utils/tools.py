@@ -1,21 +1,13 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[4]:
-
-
-#importing libraries
 import pandas as pd
 import numpy as np
 import cv2
 import os
 
-
-# In[42]:
-
-
-#a function to load all similar formats pictures in a folder 
-def load_files(add,formatt='tif'):
+def load_files(add,
+               formatt='tif'):
+    """
+    A function to load all similar formats pictures in a folder.
+    """
     FileNames=[]
     FileName=os.listdir(add)
     for i in range(len(FileName)):
@@ -26,8 +18,13 @@ def load_files(add,formatt='tif'):
             pass
     return(FileNames)
 
-#checking if the frame is suitable to start analyzing or not
-def drop_check(diff_img,surface_y, pic_y_length=150, vertical_margin=10 , horizontal_margin=10):
+def drop_check(diff_img,surface_y,
+               pic_y_length:int=150,
+               vertical_margin:int=0,
+               horizontal_margin:int=10):
+    """
+    checking if the frame is suitable to start analyzing or not
+    """
     #noise removing 
     kernel = np.ones((3,3),np.uint8) #3 is maximum allowed number
     diff_img=cv2.morphologyEx(np.array(diff_img), cv2.MORPH_CLOSE, kernel)

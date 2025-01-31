@@ -1,42 +1,40 @@
-#!/usr/bin/env python
-# coding: utf-8
+import  cv2
+import  numpy               as      np
+from    scipy               import  ndimage
+from    scipy.optimize      import  curve_fit
 
-# In[2]:
-
-
-#importing libraries
-import numpy as np
-import cv2
-from scipy.optimize import curve_fit
-from scipy import ndimage
-
-
-# In[4]:
-
-
-#line equation function
 def objective(x, a, b):
+    """
+    line equation function
+    """
     return a *x + b  
 
-
-# In[1]:
-
-
-#defining rotation class to detect surface, calculate tilt angle (automatically/manually), and rotate the image
 class Rotation:
-    #defining initial variables
-    #the horizontal_search_area_start and horizontal_search_area_end define the desired area horizontally
-    #the starting_height defines the starting point to start searching vertically downward to find the surface
-    #the object_detection_threshold select pixels with less than 200 intensity (more black) as the surface line topmost pixels
-    def __init__(self,starting_height=350,horizontal_search_area_start=0,
-                 horizontal_search_area_end=300,object_detection_threshold=200):
+    """
+    defining rotation class to detect surface, calculate tilt angle (automatically/manually), and rotate the image
+    """
+
+    def __init__(self,
+                 starting_height:int                = 350,
+                 horizontal_search_area_start:int   = 0,
+                 horizontal_search_area_end:int     = 300,
+                 object_detection_threshold:int     = 200):
+        """
+        defining initial variables
+        the horizontal_search_area_start and horizontal_search_area_end define the desired area horizontally
+        the starting_height defines the starting point to start searching vertically downward to find the surface
+        the object_detection_threshold select pixels with less than 200 intensity (more black) as the surface line topmost pixels
+        """
         self.starting_height = starting_height
         self.horizontal_search_area_start = horizontal_search_area_start
         self.horizontal_search_area_end = horizontal_search_area_end
         self.object_detection_threshold = object_detection_threshold
     
-    #the surface detection
-    def detect_surface(self,img):
+    def detect_surface(self,
+                       img):
+        """
+        the surface detection
+        """
         img_detected=img.copy() #making a copy
         img_binarized=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) #making the image black and white
         x_detected=[]
@@ -60,9 +58,12 @@ class Rotation:
         
         return(img_detected,x_detected,y_detected,horizontal_line)
             
-        
-    #the tilt angle measurement
-    def tilt_calculation(self, x_detected,y_detected):
+    def tilt_calculation(self,
+                         x_detected,
+                         y_detected):
+        """
+        the tilt angle measurement
+        """
         #fitting a line to the surface line coordinates
         popt, _ = curve_fit(objective, x_detected, max(y_detected)-np.array(y_detected))
         a, b = popt
@@ -76,15 +77,28 @@ class Rotation:
         
         return(angle)
     
-        #the rotation
-    def rotate(self,img,angle,mode='reflect'):
-        # rotating the image based on calculated angle to make it horizontal
-        rotated_image=ndimage.rotate(img, -angle,mode=mode,reshape=0).copy()#{‘reflect’, ‘grid-mirror’, ‘constant’, ‘grid-constant’, ‘nearest’, ‘mirror’, ‘grid-wrap’, ‘wrap’}
+    def rotate(self,
+               img,
+               angle,
+               mode='reflect'):
+        """
+        the rotation
+        rotating the image based on calculated angle to make it horizontal
+        mode = {‘reflect’, ‘grid-mirror’, ‘constant’, ‘grid-constant’, ‘nearest’, ‘mirror’, ‘grid-wrap’, ‘wrap’}
+        """
+        rotated_image=ndimage.rotate(img, -angle,mode=mode,reshape=0).copy()
         return(rotated_image)
     
-        #manually rotation for the specific situations (transparent samples)
-    def manually_rotation(self, img, angle=0, surface_line=520,mode='reflect'):
-        img_edited=ndimage.rotate(img, -angle,mode=mode,reshape=0).copy()#{‘reflect’, ‘grid-mirror’, ‘constant’, ‘grid-constant’, ‘nearest’, ‘mirror’, ‘grid-wrap’, ‘wrap’}
+    def manually_rotation(self,
+                          img,
+                          angle:int             = 0,
+                          surface_line:int      = 520,
+                          mode:str              = 'reflect'):
+        """
+        manually rotation for the specific situations (transparent samples)
+        mode = {‘reflect’, ‘grid-mirror’, ‘constant’, ‘grid-constant’, ‘nearest’, ‘mirror’, ‘grid-wrap’, ‘wrap’}
+        """
+        img_edited=ndimage.rotate(img, -angle,mode=mode,reshape=0).copy()
         img_edited[surface_line,:,:]=np.array([[0,0,255]]*img_edited.shape[1])
         img_edited[surface_line+1,:,:]=np.array([[0,0,255]]*img_edited.shape[1])
 

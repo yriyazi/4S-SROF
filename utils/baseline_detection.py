@@ -1,33 +1,29 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
-#importing libraries
-import numpy as np
 import cv2
-import angle_detection
-import tools
-from angle_detection import Rotation
-
-
-# In[1]:
-
+import  tools
+import  numpy                   as      np
+import  utils.angle_detection   as      angle_detection
+from    utils.angle_detection   import  Rotation
 
 class Baseline:
-    
-    #middle_drop_height is a margin upside of the surface line where we can say surely is not in the reflection part
-    #drop_start_height is a margin upside of the surface line, searching to find baseline will start vertically from drop_middle_y to drop_start downward
-    #object_detection_threshold is a threshold to find objects on the image
-    def __init__(self, surface_line ,middle_drop_height=20,drop_start_height=0, object_detection_threshold=40):
+    """middle_drop_height is a margin upside of the surface line where we can say surely is not in the reflection part
+    drop_start_height is a margin upside of the surface line, searching to find baseline will start vertically from drop_middle_y to drop_start downward
+    object_detection_threshold is a threshold to find objects on the image"""
+
+    def __init__(self,
+                 surface_line,
+                 middle_drop_height:int         =20,
+                 drop_start_height:int          =0,
+                 object_detection_threshold:int =40):
+        
         self.object_detection_threshold=object_detection_threshold
         self.drop_start=surface_line-drop_start_height 
         self.drop_middle_y=self.drop_start-middle_drop_height
     
-    #drop_existence help to find out if there is any droplet in the frame or not
-    #it is starting to search for the droplet edge horizontally
     def drop_existence(self,diff_img):
+        """
+        drop_existence help to find out if there is any droplet in the frame or not
+        it is starting to search for the droplet edge horizontally
+        """
         len_x_diff_img=diff_img.shape[1]
         
         for x_left in range(len_x_diff_img):
@@ -37,8 +33,10 @@ class Baseline:
         
         return(drop_existence,x_left)
     
-    #drop_cropping finds the droplet position then crop it based on input margin values (x_left_margin,x_right_margin,y_up_margin)
     def drop_cropping(self,diff_img, x_left_margin=30, x_right_margin=60,y_up_margin=10):
+        """
+        drop_cropping finds the droplet position then crop it based on input margin values (x_left_margin,x_right_margin,y_up_margin)
+        """
         len_x_diff_img=diff_img.shape[1]
     
         #calculating left side cropping position
@@ -75,10 +73,13 @@ class Baseline:
         y_up=y_up-y_up_margin
         drop_reflection=diff_img[y_up:y_down,x_left:x_right]
         return(drop_reflection,x_left,x_right,y_up,y_down)
-    
-#baseline detection based on canny edge detection algorithm
-#drop_check_height is a margin upside of the surface line where we can say surely is not in the reflection part
-def edgebased_baseline_detection(drop_reflection,drop_check_height=20):
+
+def edgebased_baseline_detection(drop_reflection,
+                                 drop_check_height=20):
+    """
+    baseline detection based on canny edge detection algorithm
+    drop_check_height is a margin upside of the surface line where we can say surely is not in the reflection part
+    """
     j_list=[]
     i_list=[]
     #calculate edge based on canny
@@ -113,8 +114,10 @@ def edgebased_baseline_detection(drop_reflection,drop_check_height=20):
     just_drop=drop_reflection[:base_line,:,:]
     return(just_drop,canny_diff_drop,base_line)
 
-#baseline detection based on differentiation in color 
 def colorbased_baseline_detection(drop_reflection):
+    """
+    baseline detection based on differentiation in color 
+    """
     #calculating the whiteness of every row
     list_mean_whiteness=[]
     for i in range(drop_reflection.shape[0]):
@@ -129,9 +132,20 @@ def colorbased_baseline_detection(drop_reflection):
     list_mean_whiteness_derivative=list_mean_whiteness_derivative+[0]
     return(list_mean_whiteness_derivative.index(min(list_mean_whiteness_derivative)))
 
-#test if angle, surface line, and baseline measured correctly
-def test_baseline_detection(address, angle, surface_line, startingframe_index, endingframe_index, baseline_method="edgebased",
-                            frame_index=0, interval=5, alpha = 0.95, up_margin= 50, down_margin= 50):
+def test_baseline_detection(address,
+                            angle,
+                            surface_line,
+                            startingframe_index,
+                            endingframe_index,
+                            baseline_method="edgebased",
+                            frame_index=0,
+                            interval=5,
+                            alpha = 0.95,
+                            up_margin= 50,
+                            down_margin= 50):
+    """
+    test if angle, surface line, and baseline measured correctly
+    """
     
     #loading the frame
     name_files=tools.load_files(address,formatt='tif')

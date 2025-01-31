@@ -1,14 +1,22 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import criteria_definition
+import pandas                       as pd
+import numpy                        as np
+import matplotlib.pyplot            as plt
+import utils.criteria_definition    as criteria_definition
 plt.rcParams["figure.figsize"] = (20,15)
 
 
 
-def visualize(save_address , i_list,j_list,i_left,j_left,i_right,j_right,
-             j_poly_left,i_poly_left,j_poly_right,i_poly_right,x_cropped,
-             i_poly_left_rotated, j_poly_left_rotated, i_poly_right_rotated, j_poly_right_rotated, cm_on_pixel=5/1280, middle_line_switch=0):
+def visualize(  save_address ,
+                i_list,                 j_list,
+                i_left,                 j_left,
+                i_right,                j_right,
+                j_poly_left,            i_poly_left,
+                j_poly_right,           i_poly_right,
+                x_cropped,
+                i_poly_left_rotated,    j_poly_left_rotated,
+                i_poly_right_rotated,   j_poly_right_rotated, 
+                cm_on_pixel=5/1280, 
+                middle_line_switch=0):
 
     plt.cla()
     font_size=14

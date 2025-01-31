@@ -1,26 +1,31 @@
 
 #importing libraries
-import numpy as np
-import cv2
-from tensorflow import keras
-from tensorflow.keras import layers
-from PIL import Image
-import PIL
-import tensorflow as tf
-from tensorflow.keras.preprocessing.image import img_to_array
+import  cv2
+import  PIL
 
+import  numpy                                   as      np
+from    PIL                                     import  Image
+import  tensorflow                              as      tf
+from    tensorflow.keras.preprocessing.image    import  img_to_array
+from    tensorflow                              import  keras
+from    tensorflow.keras                        import  layers
 
-# Define the DepthToSpace layer
 class DepthToSpace(layers.Layer):
+    
     def __init__(self, upscale_factor, **kwargs):
+        """
+        Define the DepthToSpace layer
+        """
         super(DepthToSpace, self).__init__(**kwargs)
         self.upscale_factor = upscale_factor
 
     def call(self, inputs):
         return tf.nn.depth_to_space(inputs, self.upscale_factor)
 
-# Build the model architecture and load the trained weights
 def model_architecture(weight_address):
+    """
+    Build the model architecture and load the trained weights
+    """
     # Initial values
     upscale_factor = 3
     channels = 1
@@ -43,13 +48,17 @@ def model_architecture(weight_address):
     
     return model
 
-# Optimize model prediction with @tf.function
 @tf.function
 def predict(input_tensor, model):
+    """
+    Optimize model prediction with @tf.function
+    """
     return model(input_tensor, training=False)
 
-# Upscale the image using the optimized model and OpenCV
 def upscale_image(model, img):
+    """
+    Upscale the image using the optimized model and OpenCV
+    """
     # img is expected to be a NumPy array in RGB format
     # Convert image to YCrCb color space
     img_y_cr_cb = cv2.cvtColor(img, cv2.COLOR_RGB2YCrCb)
@@ -80,8 +89,12 @@ def upscale_image(model, img):
 
     return out_img_rgb
 
-#edge detection using canny and removing extra detected pixels
-def edge_extraction_canny( upscaled_image, canny_v1=100, canny_v2=200):
+def edge_extraction_canny(upscaled_image,
+                          canny_v1=100,
+                          canny_v2=200):
+    """
+    Edge detection using canny and removing extra detected pixels
+    """
 
     j_list_left=[]
     i_list_left=[]
@@ -127,8 +140,11 @@ def edge_extraction_canny( upscaled_image, canny_v1=100, canny_v2=200):
 
     return(i_list,j_list)
 
-#edge detection using a simple threshold to detect objects and removing extra detected pixels
-def edge_extraction(upscaled_image, thr=40):
+def edge_extraction(upscaled_image,
+                    thr=40):
+    """
+    edge detection using a simple threshold to detect objects and removing extra detected pixels
+    """
 
     j_list_left=[]
     i_list_left=[]

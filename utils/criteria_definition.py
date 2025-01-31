@@ -1,18 +1,12 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 import warnings
 import numpy as np
 
-
-# In[39]:
-
-
-#selecting pixels of the advancing part
-def advancing_pixel_selection( i_list,j_list, left_number_of_pixels=150):
+def advancing_pixel_selection(i_list,
+                              j_list, 
+                              left_number_of_pixels=150) -> tuple[list, list]:
+    """
+    selecting pixels of the advancing part
+    """
     
     #selecting left side of the droplet
     i_list=np.array(i_list)
@@ -42,8 +36,12 @@ def advancing_pixel_selection( i_list,j_list, left_number_of_pixels=150):
 
     return(i_left_selected, j_left_selected)
 
-#select pixels of the receding part
-def receding_pixel_selection( i_list,j_list, right_number_of_pixels=65):
+def receding_pixel_selection(i_list,
+                             j_list,
+                             right_number_of_pixels=65)-> tuple[list, list]:
+    """
+    select pixels of the receding part
+    """
 
     #selecting left side of the droplet
     i_list=np.array(i_list)
@@ -73,8 +71,13 @@ def receding_pixel_selection( i_list,j_list, right_number_of_pixels=65):
 
     return(i_right_selected, j_right_selected)
 
-#fitting the polynomial
-def poly_fitting( i,j,polynomial_degree=3,line_space=100):
+def poly_fitting(i,
+                 j,
+                 polynomial_degree=3,
+                 line_space=100)-> tuple[np.NDArray, np.NDArray]:
+    """
+    fitting the polynomial
+    """
     with warnings.catch_warnings():
         warnings.simplefilter('ignore', np.RankWarning)
         y_polyequation_left = np.poly1d(np.polyfit(i,j,polynomial_degree))
@@ -84,9 +87,12 @@ def poly_fitting( i,j,polynomial_degree=3,line_space=100):
 
     return(x_poly_left, y_poly_left)
 
-#advancing angle calculations
-def left_angle( i_poly_left, j_poly_left, tan_pixel_number=1):
-    
+def left_angle(i_poly_left,
+               j_poly_left,
+               tan_pixel_number=1)-> tuple[int, int]:
+    """
+    advancing angle calculations
+    """
     dx=i_poly_left[tan_pixel_number]-i_poly_left[0]
     dy=j_poly_left[tan_pixel_number]-j_poly_left[0]
     gradian=np.arctan((dy)/(dx))
@@ -95,8 +101,12 @@ def left_angle( i_poly_left, j_poly_left, tan_pixel_number=1):
     left_pixel_position=j_poly_left[0]    
     return(left_angle,left_pixel_position)
 
-#receding angle calculations
-def right_angle( i_poly_right, j_poly_right, tan_pixel_number=1):
+def right_angle(i_poly_right,
+                j_poly_right,
+                tan_pixel_number=1):
+    """
+    receding angle calculations
+    """
     
     dx=i_poly_right[tan_pixel_number]-i_poly_right[0]
     dy=j_poly_right[tan_pixel_number]-j_poly_right[0]
@@ -106,8 +116,10 @@ def right_angle( i_poly_right, j_poly_right, tan_pixel_number=1):
     right_pixel_position=j_poly_right[0]
     return(right_angle,right_pixel_position)
 
-#middel line angle calculations
 def middle_angle( i_poly_right, j_poly_right):
+    """
+    middel line angle calculations
+    """
     dx=i_poly_right[-2]-i_poly_right[-1]
     dy=j_poly_right[-2]-j_poly_right[-1]
     gradian=np.arctan((dy)/(dx))
@@ -122,11 +134,13 @@ def middle_angle( i_poly_right, j_poly_right):
     middle_pixel_position=i_poly_right[-1]
     return(middle_angle,middle_pixel_position)
 
-#horizontal center calculations
-#the intersection margin variable is a margin from the top side of the edge to prevent some error in special cases
 def horizontal_center( i_list,j_list,intersection_margin=4):
+    """
+    horizontal center calculations
+    the intersection margin variable is a margin from the top side of the edge to prevent some error in special cases
+    separating the drop into two right and left sides
+    """
 
-    #separating the drop into two right and left sides
     i_list, j_list = np.array(i_list), np.array(j_list)
     i_middle_vertical=int(np.mean(i_list[j_list==max(j_list)]))
     i_list_left, j_list_left= i_list[i_list<=i_middle_vertical],j_list[i_list<=i_middle_vertical]
@@ -170,9 +184,13 @@ def horizontal_center( i_list,j_list,intersection_margin=4):
         horizontal_center=sum_all/total_weight
     return(horizontal_center,mean_list,j_location_list)
 
-#vertical center calculations
-#the intersection margin variable is a margin from the left side of the edge to prevent some error in special cases
-def vertical_center( i_list,j_list,intersection_margin=4):
+def vertical_center(i_list,
+                    j_list,
+                    intersection_margin=4):
+    """
+    vertical center calculations
+    the intersection margin variable is a margin from the left side of the edge to prevent some error in special cases
+    """
     down_pix=0  
 
     #deviding right and left
