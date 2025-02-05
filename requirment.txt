@@ -1,8 +1,0 @@
-cv2
-PIL
-numpy           
-pandas
-scipy
-tensorflow                           
-keras
-                  
