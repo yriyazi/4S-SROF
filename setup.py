@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="SFOF4S",
-    version="1.0.3",
+    version="1.0.12",
     author="Sajjad Shumaly",
     maintainer="Yassin Riyazi",
     maintainer_email="iyasiniyasin98@gmail.com",
@@ -21,6 +21,8 @@ setup(
         "tqdm>=4.67",
         "pandas>=2.2",
         "natsort>=8.4",
+        "requests>=2.32",
+        "matplotlib>=3.9"
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

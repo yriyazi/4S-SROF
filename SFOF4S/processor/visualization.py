@@ -9,7 +9,7 @@ import os
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 
-import processor
+from    .criteria_definition import *
 
 plt.rcParams["figure.figsize"] = (20,15)
 
@@ -39,7 +39,7 @@ def visualize(save_address , i_list,j_list,i_left,j_left,i_right,j_right,
     plt.plot(i_poly_right, j_poly_right,'--',color='yellow',linewidth=4)
 
     #left angle
-    left_angle_degree,left_angle_point=processor.left_angle(i_poly_left_rotated, j_poly_left_rotated,1)
+    left_angle_degree,left_angle_point=left_angle(i_poly_left_rotated, j_poly_left_rotated,1)
     adv=left_angle_degree
     plt.plot([i_poly_left[0]+20,i_poly_left[0]],[j_poly_left[0],j_poly_left[0]],linewidth=3, color='blue')
     m=np.tan(left_angle_degree*(np.pi/180))
@@ -47,7 +47,7 @@ def visualize(save_address , i_list,j_list,i_left,j_left,i_right,j_right,
     plt.text(i_poly_left[0], j_poly_left[0]-12, 'Advancing='+str(round(adv, 2)), color="blue", fontsize=font_size)
 
     #right angle
-    right_angle_degree,right_angle_point=processor.right_angle(i_poly_right_rotated, j_poly_right_rotated,1)
+    right_angle_degree,right_angle_point=right_angle(i_poly_right_rotated, j_poly_right_rotated,1)
     rec=right_angle_degree
     plt.plot([i_poly_right[0]-20,i_poly_right[0]],[j_poly_right[0],j_poly_right[0]],linewidth=3, color='blue')
     m=np.tan(right_angle_degree*(np.pi/180))
@@ -63,32 +63,32 @@ def visualize(save_address , i_list,j_list,i_left,j_left,i_right,j_right,
 
     #horizontal center
     i_list, j_list = np.array(i_list), np.array(j_list)
-    v_center,*v=processor.vertical_center(i_list,j_list)
-    h_center,i_mean,j_mean=processor.horizontal_center(i_list,j_list)
+    v_center,*v=vertical_center(i_list,j_list)
+    h_center,i_mean,j_mean=horizontal_center(i_list,j_list)
     plt.plot([h_center,h_center],[min(j_list),j_list[i_list==int(h_center)][0]],'--',color='green')
     drop_height=abs(min(j_list)-j_list[i_list==int(h_center)][0])*conversion_factor
     i_text_horizontal=(j_list[i_list==int(h_center)][0]+v_center)/2
     plt.text(h_center+5, i_text_horizontal, str(round(drop_height,3))+' cm', color="green", fontsize=font_size)
 
     #middle line
-    i_middle_line,j_middle_line=processor.poly_fitting(i_mean,j_mean,polynomial_degree=1,line_space=100)
-    middle_angle_degree=processor.middle_angle(i_middle_line, j_middle_line)
+    i_middle_line,j_middle_line=poly_fitting(i_mean,j_mean,polynomial_degree=1,line_space=100)
+    middle_angle_degree=middle_angle(i_middle_line, j_middle_line)
     if middle_line_switch !=0:
-        i_middle_line,j_middle_line=processor.poly_fitting(i_mean,j_mean,polynomial_degree=1,line_space=100)
-        middle_angle_degree=processor.middle_angle(i_middle_line, j_middle_line)
+        i_middle_line,j_middle_line=poly_fitting(i_mean,j_mean,polynomial_degree=1,line_space=100)
+        middle_angle_degree=middle_angle(i_middle_line, j_middle_line)
         i2_middle_line=min(i_middle_line[j_middle_line<=j_list[i_list==int(h_center)][0]])
         plt.plot([i_middle_line[-1],i2_middle_line], [0,j_middle_line[i_middle_line==i2_middle_line][0]],'-',color='black')
         plt.text(i2_middle_line-35, j_middle_line[i_middle_line==i2_middle_line][0]-20, 'Angle='+str(round(middle_angle_degree[0],2)), color="black", fontsize=font_size)
 
     #vertical center
-    v_center,i_mean,j_mean=processor.vertical_center(i_list,j_list)
+    v_center,i_mean,j_mean=vertical_center(i_list,j_list)
     plt.plot([min(i_list[j_list==int(v_center)]),max(i_list[j_list==int(v_center)])],[v_center,v_center],'--',color='green')
     i_text_vertical=(min(i_list)+h_center)/2
     drop_length=abs(min(i_list[j_list==int(v_center)])-max(i_list[j_list==int(v_center)]))*conversion_factor
     plt.text(i_text_vertical, v_center+5, str(round(drop_length,3))+' cm', color="green", fontsize=font_size)
 
     #Center
-    v_center,i_mean,j_mean=processor.vertical_center(i_list,j_list)
+    v_center,i_mean,j_mean=vertical_center(i_list,j_list)
     x_center=((1280)*3-h_center)*conversion_factor
     y_center=v_center*conversion_factor
     plt.plot(h_center,v_center,'.',color='blue',markersize=14)

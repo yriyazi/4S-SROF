@@ -1,4 +1,4 @@
-import  cv2
+import  cv2, os
 import  numpy                                   as      np
 from    PIL                                     import  Image
 import  PIL
@@ -32,7 +32,9 @@ class initiation():
         import  torch
         from .edge_superres_pytorch import PyTorchModel
         self.sup_res_model = PyTorchModel()
-        self.sup_res_model.load_state_dict(torch.load("model/converted_model.pt", weights_only=True))
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+
+        self.sup_res_model.load_state_dict(torch.load(os.path.join(script_dir, "converted_model.pt"), weights_only=True))
         self.sup_res_model.eval()
     
     def initiate_tf(self,):

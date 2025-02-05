@@ -1,6 +1,6 @@
 import numpy as np
-import cv2
-import processor.tools as tools
+import cv2, os
+from .tools import *
 from .angle_detection import Rotation
 
 class Baseline:
@@ -147,13 +147,14 @@ def test_baseline_detection(address,
     """
     
     #loading the frame
-    name_files=tools.load_files(address,formatt='tif')
-    img=cv2.imread(address+"\\"+name_files[frame_index]) 
+    name_files=load_files(address,formatt='tif')
+    img=cv2.imread(os.path.join(address,name_files[frame_index])) 
     #rotate the frame
     Rotate=Rotation(starting_height=450,horizontal_search_area_start=600,horizontal_search_area_end=800,object_detection_threshold=200) 
     rotated_image_frame=Rotate.rotate(img,angle)
     #load the first drop image to make reference image
-    img=cv2.imread(address+"\\"+name_files[startingframe_index]) 
+    
+    img=cv2.imread(os.path.join(address,name_files[startingframe_index])) 
     rotated_image_drop=Rotate.rotate(img,angle)
     diff_img_ref=cv2.absdiff(rotated_image_drop, rotated_image_frame)
 
@@ -164,7 +165,7 @@ def test_baseline_detection(address,
         counter+=1
         print(i,end=", ")
         #loading and rotating images
-        img=cv2.imread(address+"\\"+name_files[i]) 
+        img=cv2.imread(os.path.join(address,name_files[i]))
         rotated_image_drop=Rotate.rotate(img,angle)
         #calculating diff image
         diff_img=cv2.absdiff(rotated_image_drop, rotated_image_frame)

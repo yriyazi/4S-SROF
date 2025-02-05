@@ -1,4 +1,12 @@
-import  PIL, cv2, os, processor.visualization as visualization, utils, model, tqdm
+import  PIL, cv2, os, tqdm
+
+# Get the parent directory
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+print(os.path.dirname(__file__))
+from ..utils import *
+from ..model import *
+
+from    .visualization import visualize
 import  numpy                   as      np
 import  pandas                  as      pd
 from    scipy.signal            import  savgol_filter
@@ -11,18 +19,18 @@ def main_processor(ad,
                    cm_on_pixel_ratio,
                    fps,
                    error_handling_kernel_size):
-    angle, rotated1, red1_xs, red1_ys, red2_xs, red2_ys =   utils.slope_measurement(ad)
-    baseline                                            =   min(utils.find_reds(rotated1)[1])-1
-    name_files                                          =   utils.load_files(ad)
+    angle, rotated1, red1_xs, red1_ys, red2_xs, red2_ys =   slope_measurement(ad)
+    baseline                                            =   min(find_reds(rotated1)[1])-1
+    name_files                                          =   load_files(ad)
     img_frame                                           =   cv2.imread(os.path.join(ad,name_files[0]))
-    img_frame_rotated                                   =   utils.rotate_image(img_frame, angle)
+    img_frame_rotated                                   =   rotate_image(img_frame, angle)
 
     adv_list, rec_list, contact_line_length_list, x_center_list, y_center_list, middle_angle_degree_list,processed_number_list=[],[],[],[],[],[],[]
     rec_angle_point_list, adv_angle_point_list=[],[]
 
-    for file_number in tqdm.tqdm(range(1, len(name_files))):
+    for file_number in tqdm(range(1, len(name_files))):
         img_drop=cv2.imread(os.path.join(ad,name_files[file_number]))
-        img_drop_rotated=utils.rotate_image(img_drop, angle)
+        img_drop_rotated=rotate_image(img_drop, angle)
 
         #drop diff
         diff_img=cv2.absdiff(img_drop_rotated, img_frame_rotated)
@@ -41,7 +49,7 @@ def main_processor(ad,
         just_drop =diff_img[dim[2]:baseline,dim[0]:dim[1],:]
 
         #super resolution    
-        upscaled_image=model.upscale_image(cv2.cvtColor(just_drop.astype('uint8'), cv2.COLOR_BGR2RGB),framework)
+        upscaled_image=upscale_image(cv2.cvtColor(just_drop.astype('uint8'), cv2.COLOR_BGR2RGB),framework)
 
         #utilizing morphological transformation to remove noises
         kernel          = np.ones(error_handling_kernel_size,np. uint8) 
@@ -49,7 +57,7 @@ def main_processor(ad,
                                            cv2.MORPH_CLOSE, kernel)
 
         #keeping just external pixels as droplet curvature
-        i_list, j_list =model.edge_extraction( upscaled_image, thr=40)
+        i_list, j_list =edge_extraction( upscaled_image, thr=40)
 
         #extracting the desired number of pixels as input of the polynomial fitting 
         left_number_of_pixels=int(150*num_px_ratio)
@@ -72,8 +80,8 @@ def main_processor(ad,
         left_angle_degree,  left_angle_point        =left_angle (i_poly_left_rotated, j_poly_left_rotated,1)
         
 
-        left_polynomial_degree ,left_number_of_pixels   = utils.angle_polynomial_order(num_px_ratio,left_polynomial_degree)
-        right_polynomial_degree ,right_number_of_pixels = utils.angle_polynomial_order(num_px_ratio,left_polynomial_degree)
+        left_polynomial_degree ,left_number_of_pixels   = angle_polynomial_order(num_px_ratio,left_polynomial_degree)
+        right_polynomial_degree ,right_number_of_pixels = angle_polynomial_order(num_px_ratio,left_polynomial_degree)
 
         #9. extracting the desired number of pixels as input of the polynomial fitting 
         i_left, j_left=advancing_pixel_selection(i_list,j_list, left_number_of_pixels=left_number_of_pixels)
@@ -93,7 +101,7 @@ def main_processor(ad,
         distance = (x_cropped) * 3
         
         address=os.path.join(ad,'SR_edge',name_files[file_number])
-        adv, rec,rec_angle_point, adv_angle_point, contact_line_length, x_center, y_center, middle_angle_degree=visualization.visualize(address, 
+        adv, rec,rec_angle_point, adv_angle_point, contact_line_length, x_center, y_center, middle_angle_degree=visualize(address, 
                                                                                                                                     distance+np.array(i_list),j_list,distance+np.array(i_left),j_left,distance+np.array(i_right),j_right,
                                                                                                                                     j_poly_left,distance+np.array(i_poly_left),j_poly_right,distance+np.array(i_poly_right),x_cropped,
                                                                                                                                     distance+np.array(i_poly_left_rotated), j_poly_left_rotated, distance+np.array(i_poly_right_rotated),

@@ -74,12 +74,12 @@ def receding_pixel_selection(i_list,
 def poly_fitting(i,
                  j,
                  polynomial_degree=3,
-                 line_space=100)-> tuple[np.NDArray, np.NDArray]:
+                 line_space=100):
     """
     fitting the polynomial
     """
     with warnings.catch_warnings():
-        warnings.simplefilter('ignore', np.RankWarning)
+        # warnings.simplefilter('ignore', np.RankWarning)
         y_polyequation_left = np.poly1d(np.polyfit(i,j,polynomial_degree))
 
     x_poly_left = np.linspace(min(i), max(i), line_space)
