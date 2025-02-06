@@ -1,18 +1,22 @@
 # Deep Learning to Analyze Sliding Drops ([Cite Us](#citation))
 
-The **4S-SROF toolkit** is designed to solve existing challenges in analyzing the sliding motion of drops on tilted plates. It enables researchers to conduct detailed studies by considering a wide range of variables and their correlations.
+The **SFOF4S toolkit** is designed to solve existing challenges in analyzing the sliding motion of drops on tilted plates. It enables researchers to conduct detailed studies by considering a wide range of variables and their correlations.
 
 Key features include:
 - **Super-Resolution Enhancement**: The toolkit enlarges images by an up-scale ratio of 3 using a super-resolution model trained on a dataset of 14,000 sliding drop images.
 - **Comprehensive Analysis**: Extracts various criteria from the super-resolution images to provide precise insights into drop behavior.
 - **Optimized Contact Angle Measurement**: Contact angles are measured using an optimized polynomial method, as described in the accompanying manuscript.
 
-The 4S-SROF toolkit streamlines complex image processing tasks, empowering researchers with high-quality data for in-depth analysis.
+This toolkit streamlines complex image processing tasks, empowering researchers with high-quality data for in-depth analysis.
 
 ![graphical abstract](https://user-images.githubusercontent.com/57271994/194614949-8736973c-4df3-4449-9a21-bc2423405648.png)
 
 ---
-# Data Information
+# General inforamtion
+
+The original implementation had dependency issues, so a new version was introduced to resolve them by migrating to the PyTorch framework.
+Please note that installing this package requires CUDA libraries and may occupy up to 3 GB of storage.
+Check a simple implementation ["https://github.com/yriyazi/SFOF4S-Documentation]("https://github.com/yriyazi/SFOF4S-Documentation)
 
 ## Drop Profile Video
 
@@ -51,22 +55,13 @@ The 4S-SROF toolkit streamlines complex image processing tasks, empowering resea
 
     This file contains the main executable code for the toolkit. It acts as a central hub, calling other `.py` files and libraries to perform the analysis. The code processes the video frames, extracts features, and generates the final `result.xlsx` file containing the analyzed time-series data. It integrates all steps of the workflow, making it easy to convert raw video frames into meaningful results.
 
-
 ---
-## PFOTS Sample with a Defect
 
-- **Files:** `PFOTS sample with a defect.zip.001 - .007`  
-
-    These files contain a sample of sliding drop video frame examples that have been processed using the code, including results from all steps of the analysis. You can use this sample to try the code and gain a better understanding of how it works. It serves as a practical example to help you learn more about the workflow and outputs of the analysis toolkit.
-
----
 ## Tutorial
 
-- **File:** `tutorial.ipynb`  
-
-    This file contains examples that demonstrate how the code's functions work in detail. It is designed for researchers who are familiar with coding and want to leverage the provided functions for tasks such as detecting surface slopes, extracting drop edges, or identifying appropriate video frames where only one droplet is present in the frame automatically.  
-
-    If you are not familiar with coding or prefer to use the toolkit quickly for analyzing sliding drop videos, you may skip this file.
+- **tutorial:** `tutorial.ipynb`  and dataset
+    [HERE](https://github.com/yriyazi/SFOF4S-Documentation)
+    
 
 ---
 
@@ -98,26 +93,6 @@ The following `.py` files are included in the toolkit and provide functions for 
 - `visualization.py`
 
 These scripts are essential for researchers working with this toolkit.
-
----
-
-# Libraries and Versions
-
-Below is a list of the libraries and their corresponding versions used in this project:
-
-| Library      | Version | Link                                                 |
-|--------------|---------|------------------------------------------------------|
-| TensorFlow   | 2.5.0   | [tensorflow](https://pypi.org/project/tensorflow/)   |
-| Keras        | 2.9.0   | [keras](https://pypi.org/project/keras/)             |
-| OpenCV (cv2) | 4.5.4   | [opencv-python](https://pypi.org/project/opencv-python/) |
-| SciPy        | 1.7.1   | [scipy](https://pypi.org/project/scipy/)             |
-| Pillow (PIL) | 8.4.0   | [Pillow](https://pypi.org/project/Pillow/)           |
-| NumPy        | 1.20.3  | [numpy](https://pypi.org/project/numpy/)             |
-| Pandas       | 1.3.4   | [pandas](https://pypi.org/project/pandas/)           |
-| Matplotlib   | 3.4.3   | [matplotlib](https://pypi.org/project/matplotlib/)   |
-| Natsort      | 8.4.0   | [natsort](https://pypi.org/project/natsort/)         |
-
-Each library name links to its official PyPI page for more details.
 
 
 ---

@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="SFOF4S",
-    version="1.0.12",
+    version="1.0.13",
     author="Sajjad Shumaly",
     maintainer="Yassin Riyazi",
     maintainer_email="iyasiniyasin98@gmail.com",
@@ -36,5 +36,6 @@ setup(
     # Project URLs for additional resources
     project_urls={
         "Source Code": "https://github.com/AK-Berger/4S-SROF",
+        "documentation": "https://github.com/yriyazi/SFOF4S-Documentation",
     },
 )
